@@ -12,8 +12,6 @@ HTTP_PORT=8001
 SYS_PORT=8002
 JMX_PORT=8003
 
-APP_DIR=app
-[ -z $APP_DIR ] && mkdir $APP_DIR
 
 SYS_MAIN_CLASS=org.springframework.boot.loader.JarLauncher
 JAVA_OPTS+=" -Dserver.port=$HTTP_PORT -Dmanagement.server.port=$SYS_PORT "
@@ -25,7 +23,7 @@ JAVA_OPTS+=" -XX:+DisableExplicitGC -XX:+PrintGCDetails -XX:+PrintGCDateStamps -
 JAVA_OPTS+=" -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=. -XX:ErrorFile=logs/java_error_%p.log"
 
 #Custom lib path
-export CLASSPATH=$APP_DIR/*:$CLASSPATH
+export CLASSPATH=./*:$CLASSPATH
 # Restrict glibc thread cache count
 export MALLOC_ARENA_MAX=4
 
