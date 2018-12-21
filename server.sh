@@ -2,24 +2,29 @@
 cd "`dirname $0`" || returnerr "$0 is not exsit."
 APP_NAME=face-ai
 if [ -z "$JAVA_HOME" ]; then
-  JAVA_HOME=~/jdk1.8.0_191
+  echo "env JAVA_HOME required"
+  exit 0
 fi
 echo "JDK HOME:$JAVA_HOME"
 
 HTTP_PORT=8001
 SYS_PORT=8002
 JMX_PORT=8003
+
+APP_DIR=app
+[ -z $APP_DIR ] && mkdir $APP_DIR
+
 SYS_MAIN_CLASS=org.springframework.boot.loader.JarLauncher
 JAVA_OPTS+=" -Dserver.port=$HTTP_PORT -Dmanagement.server.port=$SYS_PORT "
 JAVA_OPTS+=" -Dcom.sun.management.jmxremote.port=$JMX_PORT -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Dfile.encoding=utf-8"
 JAVA_OPTS+=" -Xmx512m -Xms512m -XX:NewSize=128m -XX:MaxNewSize=128m -XX:PermSize=128m -XX:MaxPermSize=128m"
 JAVA_OPTS+=" -XX:CompileThreshold=20000 -XX:+UseConcMarkSweepGC -XX:CMSInitiatingOccupancyFraction=70 -XX:+UseCMSInitiatingOccupancyOnly"
 JAVA_OPTS+=" -XX:+PrintCommandLineFlags -XX:-OmitStackTraceInFastThrow -XX:+ExplicitGCInvokesConcurrent -XX:+ParallelRefProcEnabled"
-JAVA_OPTS+=" -XX:+DisableExplicitGC -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintGCApplicationStoppedTime -Xloggc:jvm.log"
-JAVA_OPTS+=" -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=. -XX:ErrorFile=java_error_%p.log"
+JAVA_OPTS+=" -XX:+DisableExplicitGC -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintGCApplicationStoppedTime -Xloggc:logs/jvm.log"
+JAVA_OPTS+=" -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=. -XX:ErrorFile=logs/java_error_%p.log"
 
 #Custom lib path
-export CLASSPATH=./*:$CLASSPATH
+export CLASSPATH=$APP_DIR/*:$CLASSPATH
 # Restrict glibc thread cache count
 export MALLOC_ARENA_MAX=4
 
@@ -84,7 +89,7 @@ start()
         fi
     done
 
-    echo "timeout(30s)!!! Please check log: ${APP_NAME}.out!"
+    echo "timeout(30s)!!! Please check log: logs/app.log!"
 }
 
 #stop
@@ -116,7 +121,7 @@ stop()
         fi
     done
 
-    echo "timeout(90s)!!! Please check log: ${APP_NAME}.out!"
+    echo "timeout(90s)!!! Please check log: logs/app.log!"
 
     #force quit
     fuser -s -k $JMX_PORT/tcp
