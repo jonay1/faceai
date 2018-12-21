@@ -35,5 +35,9 @@ dependencies {
 	implementation 'commons-io:commons-io:2.6'
 }
 
+bootJar {
+	
+}
+
 // Define the main class for the application
 mainClassName = 'com.wolf.ai.Application'
