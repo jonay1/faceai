@@ -6,6 +6,7 @@ if [ -z "$JAVA_HOME" ]; then
   exit 0
 fi
 echo "JDK HOME:$JAVA_HOME"
+echo "shell path: `pwd`"
 
 HTTP_PORT=8001
 SYS_PORT=8002
