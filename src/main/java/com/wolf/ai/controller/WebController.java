@@ -2,7 +2,10 @@ package com.wolf.ai.controller;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.UUID;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -59,6 +62,12 @@ public class WebController {
 			staff.setName(ui.getName());
 			staff.setRegion(ui.getRegion());
 		}
+		Path dest = Paths.get("/upload/images", UUID.randomUUID().toString(), file.getOriginalFilename());
+		Path destpath = Paths.get(System.getProperty("user.dir"), dest.toString());
+		destpath.getParent().toFile().mkdirs();
+		destpath.toFile().createNewFile();
+		log.info("save image to {}", destpath);
+		file.transferTo(destpath);
 		BufferedImage srcImage = ImageIO.read(file.getInputStream());
 		String image2base64 = CommonUtil.image2base64(srcImage);
 		List<UserFace> faces = faceService.detect(image2base64);
@@ -71,7 +80,10 @@ public class WebController {
 //			int h = (int) uf.getHeight();// Math.min(srcImage.getHeight() - y, (int) uf.getHeight() + PAD * 2);
 //			BufferedImage distImage = srcImage.getSubimage(x, y, w, h);
 //			staff.setImage(CommonUtil.image2base64(distImage));
-			staff.setImage(image2base64);
+
+			staff.setSex(uf.getSex());
+			staff.setAge(uf.getAge());
+			staff.setImage(dest.toString());
 			int rs = faceService.addUser(staff.getRegion(), staff.getPhone(), image2base64, staff.getName());
 			if (rs == 0) {
 				staffDao.save(staff);

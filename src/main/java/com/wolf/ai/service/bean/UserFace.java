@@ -9,4 +9,6 @@ public class UserFace {
 	private double width;
 	private double height;
 	private int rotation;
+	private String sex;
+	private int age;
 }

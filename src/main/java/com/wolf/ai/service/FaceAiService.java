@@ -83,8 +83,7 @@ public class FaceAiService {
 	 * 人脸注册
 	 * 
 	 * <pre>
-	 * 222210-已达上限
-	 * 223105-已存在
+	 * 222210-已达上限 223105-已存在
 	 * 
 	 * @param groupId
 	 * @param userId
@@ -195,6 +194,7 @@ public class FaceAiService {
 		HashMap<String, String> options = new HashMap<String, String>();
 		options.put("max_face_num", "2");
 		options.put("face_type", "LIVE");
+		options.put("face_field", "age,gender");
 
 		String imageType = "BASE64";
 		// 人脸检测
@@ -209,12 +209,15 @@ public class FaceAiService {
 			while (it.hasNext()) {
 				JSONObject jsonObject = (JSONObject) it.next();
 				JSONObject location = jsonObject.getJSONObject("location");
+				JSONObject gender = jsonObject.getJSONObject("gender");
 				UserFace uf = new UserFace();
 				uf.setLeft(location.getDouble("left"));
 				uf.setTop(location.getDouble("top"));
 				uf.setWidth(location.getDouble("width"));
 				uf.setHeight(location.getDouble("height"));
 				uf.setRotation(location.getInt("rotation"));
+				uf.setAge(jsonObject.getInt("age"));
+				uf.setSex(gender.getString("type"));
 				list.add(uf);
 			}
 		}

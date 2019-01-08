@@ -17,5 +17,7 @@ public class Staff {
 	private String image;
 	private Boolean faced;
 	private Boolean signed;
+	private String sex;
+	private int age;
 
 }
