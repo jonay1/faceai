@@ -64,13 +64,14 @@ public class WebController {
 		List<UserFace> faces = faceService.detect(image2base64);
 		if (faces.size() == 1) {
 			UserFace uf = faces.get(0);
-			final int PAD = 50;
-			int x = (int) uf.getLeft();// Math.min(0, (int) uf.getLeft() - PAD);
-			int y = (int) uf.getTop();// Math.min(0, (int) uf.getTop() - PAD);
-			int w = (int) uf.getWidth();// Math.min(srcImage.getWidth() - x, (int) uf.getWidth() + PAD * 2);
-			int h = (int) uf.getHeight();// Math.min(srcImage.getHeight() - y, (int) uf.getHeight() + PAD * 2);
-			BufferedImage distImage = srcImage.getSubimage(x, y, w, h);
-			staff.setImage(CommonUtil.image2base64(distImage));
+//			final int PAD = 50;
+//			int x = (int) uf.getLeft();// Math.min(0, (int) uf.getLeft() - PAD);
+//			int y = (int) uf.getTop();// Math.min(0, (int) uf.getTop() - PAD);
+//			int w = (int) uf.getWidth();// Math.min(srcImage.getWidth() - x, (int) uf.getWidth() + PAD * 2);
+//			int h = (int) uf.getHeight();// Math.min(srcImage.getHeight() - y, (int) uf.getHeight() + PAD * 2);
+//			BufferedImage distImage = srcImage.getSubimage(x, y, w, h);
+//			staff.setImage(CommonUtil.image2base64(distImage));
+			staff.setImage(image2base64);
 			int rs = faceService.addUser(staff.getRegion(), staff.getPhone(), image2base64, staff.getName());
 			if (rs == 0) {
 				staffDao.save(staff);
