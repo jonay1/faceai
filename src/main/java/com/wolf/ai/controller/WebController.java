@@ -1,16 +1,17 @@
 package com.wolf.ai.controller;
 
-import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.tomcat.util.codec.binary.Base64;
+import org.h2.util.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
@@ -32,9 +33,9 @@ import com.wolf.ai.controller.bean.UserInfo;
 import com.wolf.ai.service.FaceAiService;
 import com.wolf.ai.service.bean.MatchUser;
 import com.wolf.ai.service.bean.UserFace;
-import com.wolf.ai.util.CommonUtil;
 
 import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnails;
 
 @RestController
 @Slf4j
@@ -65,11 +66,10 @@ public class WebController {
 		Path dest = Paths.get("/upload/images", UUID.randomUUID().toString(), file.getOriginalFilename());
 		Path destpath = Paths.get(System.getProperty("user.dir"), dest.toString());
 		destpath.getParent().toFile().mkdirs();
-		destpath.toFile().createNewFile();
-		log.info("save image to {}", destpath);
-		file.transferTo(destpath);
-		BufferedImage srcImage = ImageIO.read(file.getInputStream());
-		String image2base64 = CommonUtil.image2base64(srcImage);
+		File savedImage = destpath.toFile();
+		savedImage.createNewFile();
+//		BufferedImage srcImage = ImageIO.read(file.getInputStream());
+		String image2base64 = Base64.encodeBase64String(IOUtils.readBytesAndClose(file.getInputStream(), -1));// CommonUtil.image2base64(srcImage);
 		List<UserFace> faces = faceService.detect(image2base64);
 		if (faces.size() == 1) {
 			UserFace uf = faces.get(0);
@@ -87,12 +87,14 @@ public class WebController {
 			int rs = faceService.addUser(staff.getRegion(), staff.getPhone(), image2base64, staff.getName());
 			if (rs == 0) {
 				staffDao.save(staff);
-				return 0;
+				log.info("save image to {}", destpath);
+				Thumbnails.of(file.getInputStream()).size(500, 500).outputQuality(0.5d).toFile(destpath.toString());
+				return "";
 			} else if (rs == FaceConst.ALREAD_EXIST || rs == FaceConst.LIMIT_OVERDUE) {
-				return 1;
+				return "人脸已采集,不需重新采集";
 			}
 		}
-		return -1;
+		return "未找到人脸信息";
 
 	}
 

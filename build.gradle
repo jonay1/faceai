@@ -33,6 +33,9 @@ dependencies {
 	implementation 'com.h2database:h2'
 	implementation 'com.baidu.aip:java-sdk:4.8.0'
 	implementation 'commons-io:commons-io:2.6'
+	
+	//图片
+	implementation 'net.coobird:thumbnailator:0.4.8'
 }
 
 bootJar {

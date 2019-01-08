@@ -20,6 +20,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MVCConfig implements WebMvcConfigurer {
 
+	private boolean flg = false;
+
 	private CorsConfiguration buildConfig() {
 		CorsConfiguration corsConfiguration = new CorsConfiguration();
 		corsConfiguration.addAllowedOrigin("*"); // 允许任何域名使用
@@ -46,8 +48,11 @@ public class MVCConfig implements WebMvcConfigurer {
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		log.info("上传路径：" + Paths.get(System.getProperty("user.dir"), "upload/"));
-		registry.addResourceHandler("/upload/**")
-				.addResourceLocations("file:" + Paths.get(System.getProperty("user.dir"), "upload") + "/");
+		if (!flg) {
+			flg = true;
+			log.info("上传路径：" + Paths.get(System.getProperty("user.dir"), "upload"));
+			registry.addResourceHandler("/upload/**")
+					.addResourceLocations("file:" + Paths.get(System.getProperty("user.dir"), "upload") + "/");
+		}
 	}
 }
