@@ -14,7 +14,10 @@ import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Configuration
+@Slf4j
 public class MVCConfig implements WebMvcConfigurer {
 
 	private CorsConfiguration buildConfig() {
@@ -43,7 +46,8 @@ public class MVCConfig implements WebMvcConfigurer {
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		log.info("上传路径：" + Paths.get(System.getProperty("user.dir"), "upload/"));
 		registry.addResourceHandler("/upload/**")
-				.addResourceLocations("file:" + Paths.get(System.getProperty("user.dir"), "upload/"));
+				.addResourceLocations("file:" + Paths.get(System.getProperty("user.dir"), "upload") + "/");
 	}
 }
