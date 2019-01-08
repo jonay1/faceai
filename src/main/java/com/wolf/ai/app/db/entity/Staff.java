@@ -21,6 +21,6 @@ public class Staff {
 	private Boolean signed;
 	@Column(length=10)
 	private String sex;
-	private int age;
+	private Integer age;
 
 }
