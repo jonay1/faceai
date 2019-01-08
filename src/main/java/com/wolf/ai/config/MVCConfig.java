@@ -1,5 +1,7 @@
 package com.wolf.ai.config;
 
+import java.nio.file.Paths;
+
 import org.springframework.boot.web.server.ConfigurableWebServerFactory;
 import org.springframework.boot.web.server.ErrorPage;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
@@ -41,6 +43,7 @@ public class MVCConfig implements WebMvcConfigurer {
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/upload/**").addResourceLocations("file:/Users/jonay/git/faceai/upload/");
+		registry.addResourceHandler("/upload/**")
+				.addResourceLocations("file:" + Paths.get(System.getProperty("user.dir"), "upload/"));
 	}
 }
